@@ -4,6 +4,11 @@ on:
 #  push:
 #  pull_request:
   workflow_dispatch:
+    inputs:
+      branch:
+        description: 'rusefi branch name'     
+        required: true
+        default: 'master'
 
 jobs:
   build-firmware:
@@ -51,7 +56,7 @@ jobs:
         working-directory: ext/rusefi
         run: |
           git submodule update --init --depth=1
-          git checkout feature/7323-2
+          git checkout ${{ github.event.inputs.branch }}
 
       - name: Removing other .ini files since we will be uploading
         working-directory: ext/rusefi/
