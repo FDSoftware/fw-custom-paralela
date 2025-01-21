@@ -47,6 +47,12 @@ jobs:
         run: |
           brew install mtools zip dosfstools flock
 
+      - name: update submodule
+        working-directory: ext/rusefi
+        run: |
+          git submodule update --init --depth=1
+          git checkout feature/7323-2
+
       - name: Removing other .ini files since we will be uploading
         working-directory: ext/rusefi/
         run: rm -rf firmware/tunerstudio/generated/*.ini
