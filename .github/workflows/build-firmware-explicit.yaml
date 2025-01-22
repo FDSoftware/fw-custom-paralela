@@ -41,9 +41,8 @@ jobs:
 
       - name: update submodule
         run: |
-          git clone https://github.com/FDSoftware/rusefi ext/rusefi --depth=1
+          git clone --branch ${{ github.event.inputs.branch }} https://github.com/FDSoftware/rusefi ext/rusefi --depth=1
           cd ext/rusefi
-          git checkout ${{ github.event.inputs.branch }}
           git submodule update --init --depth=1
 
       - name: Install required software (ubuntu)
