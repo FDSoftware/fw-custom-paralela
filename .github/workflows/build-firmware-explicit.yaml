@@ -16,7 +16,7 @@ jobs:
 
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v4
@@ -62,8 +62,17 @@ jobs:
         run: rm -rf firmware/tunerstudio/generated/*.ini
 
       - name: Gen Config
-        working-directory: ext/rusefi/firmware
+        working-directory: ext/rusefi
         run: |
+          cd java_tools
+          ./gradlew :config_definition:shadowJar
+          ./gradlew :config_definition_base:shadowJar
+          ./gradlew :enum_to_string:shadowJar
+
+          cd ../firmware
+          ./gen_config.sh
+          git checkout -- ../java_console/models/src/main/java/com/rusefi/config/generated/Fields.java
+          ./gen_config_default.sh
           bash gen_config_board.sh ../../.. paralela
 
       - name: Config Status
