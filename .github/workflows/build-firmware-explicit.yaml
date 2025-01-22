@@ -20,8 +20,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: recursive
 
       - name: Install Arm GNU Toolchain (arm-none-eabi-gcc)
         if: ${{ env.skip != 'true' }}
@@ -41,6 +39,13 @@ jobs:
         if: ${{ matrix.os != 'macos-latest' }}
         run: lscpu | egrep 'Model name|Socket|Thread|NUMA|CPU\(s\)'
 
+      - name: update submodule
+        run: |
+          git clone https://github.com/FDSoftware/rusefi ext/rusefi --depth=1
+          cd ext/rusefi
+          git checkout ${{ github.event.inputs.branch }}
+          git submodule update --init --depth=1
+
       - name: Install required software (ubuntu)
         if: ${{ matrix.os != 'macos-latest' }}
         run: |
@@ -52,10 +57,6 @@ jobs:
         run: |
           brew install mtools zip dosfstools flock
 
-      - name: update submodule
-        working-directory: ext/rusefi
-        run: |
-          git submodule update --init --depth=1 --branch ${{ github.event.inputs.branch }}
 
       - name: Removing other .ini files since we will be uploading
         working-directory: ext/rusefi/
